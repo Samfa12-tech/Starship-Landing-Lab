@@ -1,0 +1,581 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="theme-color" content="#07111f" />
+  <meta name="description" content="Tune your starship autopilot, attempt a landing and learn from your flight data." />
+  <title>Starship Landing Lab</title>
+  <style>:root{color-scheme:dark;--ink:#eaf2ff;--soft:#94a4ba;--dim:#647991;--bg:#07111d;--panel:#0d1929;--line:#263548;--cyan:#6be1e5;--mint:#b4ec86;--orange:#ffac68;--font:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at 25% -20%,#163047 0%,#07111d 40%),var(--bg);color:var(--ink);font-family:var(--font);-webkit-font-smoothing:antialiased}button,input{font:inherit}button{cursor:pointer}a{color:inherit;text-decoration:none}button:focus-visible,a:focus-visible,input:focus-visible{outline:2px solid var(--mint);outline-offset:3px}.shell{max-width:1632px;margin:auto;padding:0 38px 28px}.topbar{height:81px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid #263546}.brand{display:flex;align-items:center;gap:12px}.brand-mark{width:38px;height:38px;background:var(--mint);color:#102a24;border-radius:8px;display:grid;place-items:center;font-size:28px;box-shadow:0 0 28px #b4ec862a}.brand-copy{display:flex;flex-direction:column;gap:0;line-height:1.07;letter-spacing:2px;font-size:15px}.brand-copy strong{font-weight:900}.brand-copy>span{font-size:11px;color:var(--mint);letter-spacing:2.1px;font-weight:750}.brand-copy small{color:#6e8794}.topbar-right{display:flex;gap:11px;align-items:center;font:700 10px var(--font);color:#8ba0ac;letter-spacing:1.6px}.live-dot,.status-led{width:7px;height:7px;border-radius:50%;background:var(--mint);box-shadow:0 0 9px var(--mint)}.top-sep{color:#465a72}.heading{display:flex;justify-content:space-between;align-items:end;gap:20px;padding:36px 0 27px}.eyebrow{font-size:10px;letter-spacing:2px;font-weight:800;color:var(--mint);display:flex;align-items:center;gap:9px}.eyebrow .line{width:20px;height:1px;background:var(--mint)}h1{font-size:clamp(38px,4.4vw,64px);letter-spacing:-2.9px;line-height:1.09;margin:10px 0 8px;font-weight:800}h1 em{font-style:normal;color:var(--mint)}.heading p{color:var(--soft);font-size:14px;letter-spacing:.2px;margin:0}.idea-link{font-size:10px;letter-spacing:1.1px;color:var(--cyan);border:1px solid #305260;padding:12px 15px;border-radius:5px;white-space:nowrap;font-weight:800;margin-bottom:4px}.idea-link span{margin-left:9px;font-size:15px}.workspace{display:grid;grid-template-columns:minmax(0,1.77fr) minmax(315px,.91fr);gap:18px}.left-pane,.right-pane{min-width:0;display:flex;flex-direction:column;gap:15px}.simulation-card,.chart-card,.control-card,.outcome-card,.flight-meta,.metrics{background:#0c1928;border:1px solid var(--line);border-radius:10px;overflow:hidden}.card-top,.control-head{display:flex;justify-content:space-between;align-items:center;padding:17px 20px;border-bottom:1px solid #25354a}.section-title{font-size:11px;font-weight:850;letter-spacing:1.2px;display:flex;align-items:center;gap:11px}.section-tag{color:var(--mint);font-size:10px;border:1px solid #4d7257;display:grid;place-items:center;width:27px;height:22px;border-radius:4px}.status{display:flex;align-items:center;gap:8px;border-radius:4px;background:#172d31;color:#b7eac8;padding:7px 10px;font-size:10px;letter-spacing:1.15px;font-weight:800}.status.flying{color:#6be1e5;background:#14333b}.status.flying .status-led{background:var(--cyan);box-shadow:0 0 9px var(--cyan)}.status.crashed{color:#ffc1a4;background:#4b2b28}.status.crashed .status-led{background:var(--orange)}.flight-stage{position:relative;background:#06111e;overflow:hidden}.flight-stage canvas{display:block;width:100%;height:auto;aspect-ratio:1040/610}.stage-overlay{pointer-events:none;position:absolute;bottom:14px;left:19px;right:19px;display:flex;justify-content:space-between}.stage-corner{font-size:9px;font-weight:750;letter-spacing:1.2px;color:#6e9aab;text-shadow:0 1px 5px #000}.flight-actions{display:flex;align-items:center;gap:11px;padding:14px 18px;background:#101e30}.primary-btn{background:var(--mint);border:1px solid var(--mint);color:#102021;border-radius:5px;font-size:11px;letter-spacing:1px;font-weight:900;padding:13px 19px;display:flex;align-items:center;gap:11px;white-space:nowrap;min-height:43px}.primary-btn:hover{background:#d3ffac}.secondary-btn{border:1px solid #3c5368;color:#b6cad7;background:#172638;border-radius:5px;padding:13px 15px;display:flex;align-items:center;gap:10px;white-space:nowrap;font-size:11px;font-weight:850;letter-spacing:1px;min-height:43px}.secondary-btn:hover{background:#22364e}.secondary-btn span{font-size:18px;line-height:.7}.keyboard-hint{color:#73899d;margin-left:auto;font-size:9px;letter-spacing:.6px;white-space:nowrap}.keyboard-hint span{padding:0 5px}.metrics{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));overflow:hidden}.metric{min-width:0;padding:17px 19px 14px;min-height:115px;border-right:1px solid var(--line)}.metric:last-child{border-right:none}.metric-name{font-size:10px;font-weight:800;letter-spacing:1px;color:#9eb0c4;display:flex;gap:6px;justify-content:space-between}.metric-name span{color:#6a8296}.metric-value{font-size:33px;font-weight:780;letter-spacing:-1.5px;font-variant-numeric:tabular-nums;margin-top:6px;white-space:nowrap}.metric-value span{font-size:22px;color:#829aaf}.metric-bar{height:3px;background:#2b4054;margin-top:6px;border-radius:6px}.metric-fill{height:100%;width:100%;background:var(--mint);border-radius:6px}.metric-caption{font-size:9px;color:#7690a5;font-weight:750;letter-spacing:1px;margin-top:4px}.chart-card{padding:0 20px 9px}.chart-top{display:flex;justify-content:space-between;gap:20px;align-items:center;padding-top:16px}.muted-sub{font-size:11px;color:#728ba0;margin:7px 0 0 39px}.legend{display:flex;gap:17px;white-space:nowrap;color:#869aaf;font-size:9px;letter-spacing:1px;font-weight:800}.legend span{display:flex;align-items:center;gap:8px}.legend i{width:16px;height:3px;display:inline-block;border-radius:2px}.key-alt{background:var(--mint)}.key-speed{background:var(--cyan)}.chart-card canvas{width:100%;height:auto;display:block}.control-card{padding:0 22px 18px}.control-head{margin:0 -22px;padding:17px 22px}.control-chip{color:#9bb6c6;border:1px solid #3b5269;border-radius:4px;font-size:9px;letter-spacing:1px;padding:5px 8px;font-weight:900}.control-card h2{font-size:24px;letter-spacing:-.6px;margin:22px 0 8px}.panel-description{color:#8aa1b5;font-size:12px;line-height:1.65;margin:0 0 20px}.sliders{display:flex;flex-direction:column;gap:24px}.slider-title{display:flex;justify-content:space-between;align-items:center;font-size:11px;font-weight:850;letter-spacing:1px}.slider-title output{font-size:15px;color:var(--mint);font-weight:850;letter-spacing:0;font-variant-numeric:tabular-nums}.slider-group input[type=range]{display:block;width:100%;margin:15px 0 8px;accent-color:var(--mint);height:6px;cursor:ew-resize}.slider-ends{display:flex;justify-content:space-between;font-size:9px;font-weight:800;letter-spacing:1px;color:#657f96}.slider-group p{color:#8398a9;font-size:11px;line-height:1.45;margin:9px 0 0}.preset-group{border-top:1px solid #263649;margin-top:26px;padding-top:19px}.preset-heading{font-size:10px;color:#b8c8d5;letter-spacing:1.2px;font-weight:850;margin-bottom:12px}.preset-buttons{display:grid;grid-template-columns:repeat(3,1fr);gap:7px}.preset{border:1px solid #35485b;background:#152639;color:#9cb5c9;border-radius:5px;padding:12px 2px;white-space:nowrap;font-size:9px;font-weight:850;letter-spacing:.3px}.preset:hover{border-color:var(--cyan)}.preset.active{background:#20352a;border-color:#85b875;color:#c7f3a7}.outcome-card{display:flex;align-items:center;gap:16px;padding:20px;min-height:141px;background:linear-gradient(120deg,#14263a,#102031)}.outcome-icon{font-size:26px;display:grid;place-items:center;flex:0 0 48px;width:48px;height:48px;border:1px solid #4d677b;border-radius:50%;color:var(--cyan)}.outcome-heading{font-size:10px;letter-spacing:1.1px;color:var(--cyan);font-weight:900}.outcome-title{font-size:19px;letter-spacing:-.3px;font-weight:800;margin:5px 0 5px}.outcome-card p{color:#92a9bd;font-size:11px;line-height:1.5;margin:0}.outcome-card.success{border-color:#63884f}.outcome-card.success .outcome-heading,.outcome-card.success .outcome-icon{color:var(--mint)}.outcome-card.failure{border-color:#825345}.outcome-card.failure .outcome-heading,.outcome-card.failure .outcome-icon{color:var(--orange)}.flight-meta{display:grid;grid-template-columns:repeat(2,1fr);gap:20px;padding:18px 20px}.flight-meta>div{display:flex;flex-direction:column;gap:6px}.flight-meta span{font-size:9px;color:#718a9f;letter-spacing:1px;font-weight:800}.flight-meta strong{font-size:10px;color:#cbd9e6;letter-spacing:.6px}footer{display:flex;justify-content:center;gap:10px;padding:28px 0 0;font-size:9px;font-weight:750;letter-spacing:1.5px;color:#658098;text-align:center}footer a{color:#94b8bd}footer span{color:#34566a}@media(max-width:1100px){.shell{padding:0 20px 25px}.workspace{grid-template-columns:minmax(0,1.38fr) minmax(285px,1fr);gap:12px}.keyboard-hint{display:none}.heading{padding:28px 0 22px}.control-card{padding:0 16px 15px}.control-head{margin:0 -16px;padding:15px 16px}.metric{padding:13px 10px}.metric-name{font-size:9px}.metric-value{font-size:27px}.metric-value span{font-size:16px}.preset{font-size:8px}.panel-description{margin-bottom:17px}.sliders{gap:15px}}@media(max-width:770px){.topbar{height:67px}.topbar-right{font-size:8px}.top-sep,.topbar-right span:last-child{display:none}.heading{align-items:start}.idea-link{display:none}.workspace{grid-template-columns:1fr}.left-pane{gap:10px}.right-pane{display:grid;grid-template-columns:1fr 1fr;gap:10px}.control-card{grid-row:span 2}.flight-meta{align-self:stretch}.metric{min-height:100px}.control-card h2{margin-top:17px}}@media(max-width:530px){.shell{padding:0 12px 20px}.heading{padding:24px 0 18px}.heading h1{font-size:41px;letter-spacing:-2px}.heading p{font-size:12px}.topbar-right{letter-spacing:.5px}.brand-copy{font-size:12px}.brand-copy>span{font-size:9px}.flight-actions{padding:10px;gap:7px}.primary-btn{flex:1;justify-content:center;padding:12px 8px;font-size:10px}.secondary-btn{font-size:10px;padding:12px 10px}.card-top{padding:12px}.stage-overlay{bottom:10px;left:10px;right:10px}.stage-corner{font-size:7px}.metrics{grid-template-columns:repeat(2,1fr)}.metric:nth-child(2){border-right:0}.metric:nth-child(-n+2){border-bottom:1px solid var(--line)}.metric{min-height:91px}.chart-card{padding:0 10px 8px}.chart-top{padding-top:13px;align-items:start}.muted-sub{font-size:9px;margin-left:0}.legend{display:none}.right-pane{display:flex}.outcome-card{min-height:108px}footer{font-size:8px;flex-wrap:wrap;gap:6px}}
+</style>
+  
+</head>
+<body>
+<div class="shell">
+  <header class="topbar">
+    <a href="./" class="brand" aria-label="Starship Landing Lab home">
+      <span class="brand-mark" aria-hidden="true">✦</span>
+      <span class="brand-copy"><strong>STARSHIP</strong><span>LANDING LAB <small>/ 01</small></span></span>
+    </a>
+    <div class="topbar-right"><span class="live-dot" aria-hidden="true"></span><span>SIMULATION ENVIRONMENT</span><span class="top-sep">•</span><span>BUILD 0.1</span></div>
+  </header>
+  <section class="heading">
+    <div><div class="eyebrow"><span class="line"></span> AUTOPILOT DEVELOPMENT PROGRAM</div>
+    <h1>Stick the <em>landing.</em></h1><p>Tune the brain. Light the engines. Learn from every touchdown.</p></div>
+    <a href="https://gamehavn.com/ideas/starship-landing-lab" target="_blank" rel="noopener noreferrer" class="idea-link">INSPIRED BY JOCHEN'S IDEA <span aria-hidden="true">↗</span></a>
+  </section>
+  <main class="workspace">
+    <section class="left-pane" aria-label="Landing simulation and flight telemetry">
+      <div class="simulation-card">
+        <div class="card-top"><div class="section-title"><span class="section-tag">01</span> LIVE FLIGHT VIEW</div><div id="runStatus" class="status"><span class="status-led"></span> STANDBY</div></div>
+        <div class="flight-stage"><canvas id="flightCanvas" width="1040" height="610" role="img" aria-label="Live side-on view of the simulated rocket and landing pad"></canvas>
+        <div class="stage-overlay"><span class="stage-corner">CAM 01 / SIDE ELEVATION</span><span class="stage-corner">GRAVITY 9.81 M/S²</span></div>
+        </div>
+        <div class="flight-actions">
+          <button type="button" id="launchButton" class="primary-btn"><span id="launchIcon">▶</span> <span id="launchText">LAUNCH SIMULATION</span></button>
+          <button type="button" id="resetButton" class="secondary-btn"><span>↻</span> RESET</button>
+          <span class="keyboard-hint">SPACE: LAUNCH / PAUSE <span>·</span> R: RESET</span>
+        </div>
+      </div>
+      <div class="metrics" aria-label="Live flight telemetry">
+        <div class="metric"><div class="metric-name">ALTITUDE <span>M</span></div><div class="metric-value" id="altitude">330<span>.0</span></div><div class="metric-bar"><div id="altFill" class="metric-fill"></div></div></div>
+        <div class="metric"><div class="metric-name">VERTICAL SPEED <span>M/S</span></div><div class="metric-value" id="speed">−12<span>.5</span></div><div class="metric-caption" id="speedCaption">DESCENDING</div></div>
+        <div class="metric"><div class="metric-name">PAD OFFSET <span>M</span></div><div class="metric-value" id="offset">−96<span>.0</span></div><div class="metric-caption">TARGET CENTER: 0</div></div>
+        <div class="metric"><div class="metric-name">ATTITUDE <span>DEG</span></div><div class="metric-value" id="attitude">+3<span>.2</span></div><div class="metric-caption" id="fuel">FUEL 100%</div></div>
+      </div>
+      <div class="chart-card">
+        <div class="chart-top"><div><div class="section-title"><span class="section-tag">02</span> FLIGHT DATA</div><div class="muted-sub">Recorded every 0.1 seconds · updates during descent</div></div><div class="legend"><span><i class="key-alt"></i> ALTITUDE</span><span><i class="key-speed"></i> DESCENT SPEED</span></div></div>
+        <canvas id="chartCanvas" width="1040" height="230" role="img" aria-label="Altitude and descent-speed telemetry traces"></canvas>
+      </div>
+    </section>
+    <aside class="right-pane" aria-label="Autopilot tuning controls">
+      <div class="control-card">
+        <div class="control-head"><div class="section-title"><span class="section-tag">03</span> FLIGHT CONTROLLER</div><span class="control-chip">PID LAB</span></div>
+        <h2>Autopilot tuning</h2><p class="panel-description">Three little knobs. One very expensive rocket. Adjust them before or during a flight.</p>
+        <div class="sliders">
+          <div class="slider-group"><div class="slider-title"><label for="braking">DESCENT BRAKING</label><output id="brakingValue">65%</output></div><input id="braking" type="range" min="0" max="100" value="65" step="1" /><div class="slider-ends"><span>GENTLE</span><span>AGGRESSIVE</span></div><p>How quickly the engine corrects its descent speed.</p></div>
+          <div class="slider-group"><div class="slider-title"><label for="drift">DRIFT CORRECTION</label><output id="driftValue">60%</output></div><input id="drift" type="range" min="0" max="100" value="60" step="1" /><div class="slider-ends"><span>RELAXED</span><span>ASSERTIVE</span></div><p>How hard it steers towards the centre of the pad.</p></div>
+          <div class="slider-group"><div class="slider-title"><label for="stability">ATTITUDE STABILITY</label><output id="stabilityValue">70%</output></div><input id="stability" type="range" min="0" max="100" value="70" step="1" /><div class="slider-ends"><span>LOOSE</span><span>STABLE</span></div><p>How firmly the ship holds the commanded angle.</p></div>
+        </div>
+        <div class="preset-group"><div class="preset-heading">QUICK EXPERIMENTS</div><div class="preset-buttons"><button type="button" data-preset="balanced" class="preset active">✓ BALANCED</button><button type="button" data-preset="hot" class="preset">🔥 TOO HOT</button><button type="button" data-preset="wobble" class="preset">〰 WOBBLY</button></div></div>
+      </div>
+      <div id="outcomePanel" class="outcome-card" aria-live="polite">
+        <div class="outcome-icon" id="outcomeIcon">◎</div><div><div class="outcome-heading" id="outcomeHeading">MISSION BRIEFING</div><div class="outcome-title" id="outcomeTitle">Ready when you are.</div><p id="outcomeDetail">Make your adjustments, then launch the simulation. The flight data will help you tune the next attempt.</p></div>
+      </div>
+      <div class="flight-meta"><div><span>MISSION</span><strong>LANDING TRIAL 001</strong></div><div><span>ENGINE</span><strong>30.5 M/S² MAX</strong></div><div><span>PAD TOLERANCE</span><strong>±17 M</strong></div><div><span>SIMULATION TIME</span><strong id="elapsed">00:00.0</strong></div></div>
+    </aside>
+  </main>
+  <footer>STARSHIP LANDING LAB <span>·</span> A SMALL GAMEHAVN PROOF OF CONCEPT <span>·</span> <a href="https://gamehavn.com/ideas/starship-landing-lab">ORIGINAL COMMUNITY IDEA ↗</a></footer>
+</div>
+<script>const GRAVITY = 9.81;
+const MAX_THRUST = 30.5;
+const PAD_HALF_WIDTH = 22;
+const STEP = 1 / 60;
+const DEFAULT_TUNING = { braking: 65, drift: 60, stability: 70 };
+const PRESETS = { balanced: DEFAULT_TUNING, hot: { braking: 17, drift: 25, stability: 40 }, wobble: { braking: 70, drift: 100, stability: 14 } };
+function freshState() {
+    return { x: -96, h: 330, vx: 6.1, vy: -12.5, angle: 0.055, angularRate: 0, fuel: 100, time: 0, thrust: 0, requestedAngle: 0, phase: 'ready', outcome: '' };
+}
+function clamp(n, min, max) { return Math.min(max, Math.max(min, n)); }
+function classify(s) {
+    if (Math.abs(s.x) > PAD_HALF_WIDTH - 5)
+        return { success: false, detail: 'Missed the landing pad. Tune drift correction.' };
+    if (Math.abs(s.vx) > 2.4)
+        return { success: false, detail: 'Too much sideways speed. Increase drift correction.' };
+    if (-s.vy > 3.8)
+        return { success: false, detail: 'Hard impact. Increase descent braking.' };
+    if (Math.abs(s.angle) > 0.14)
+        return { success: false, detail: 'Too much tilt. Increase attitude stability.' };
+    return { success: true, detail: 'Soft, upright touchdown on the pad. Nice flying!' };
+}
+function advance(state, tuning, dt = STEP) {
+    if (state.phase !== 'flying')
+        return state;
+    const s = { ...state };
+    // Lower hover-target height reduces terminal speed; earlier in descent we allow speed.
+    const targetVy = s.h > 155 ? -16 : s.h > 65 ? -10 : s.h > 20 ? -6 : -2.25;
+    const brakeResponse = 0.055 + (tuning.braking / 100) * 0.63;
+    const throttle = clamp((GRAVITY + (targetVy - s.vy) * brakeResponse) / MAX_THRUST, 0, 1);
+    const desiredAx = clamp((-s.x * (0.008 + tuning.drift * 0.00023) - s.vx * (0.07 + tuning.drift * 0.0035)), -6.7, 6.7);
+    const requestedAngle = Math.asin(clamp(desiredAx / (Math.max(12, throttle * MAX_THRUST)), -0.36, 0.36));
+    // The ship has inertia: weak attitude response makes it oscillate during correction.
+    const stiffness = 0.9 + tuning.stability * 0.10;
+    const damping = 0.65 + tuning.stability * 0.046;
+    const angularAccel = clamp((requestedAngle - s.angle) * stiffness - s.angularRate * damping, -4, 4);
+    s.angularRate += angularAccel * dt;
+    s.angle = clamp(s.angle + s.angularRate * dt, -1.25, 1.25);
+    const actualThrust = throttle * MAX_THRUST * (s.fuel > 0 ? 1 : 0);
+    s.vx += Math.sin(s.angle) * actualThrust * dt;
+    s.vy += (Math.cos(s.angle) * actualThrust - GRAVITY) * dt;
+    s.x += s.vx * dt;
+    s.h += s.vy * dt;
+    s.fuel = clamp(s.fuel - 0.13 * throttle * dt, 0, 100);
+    s.time += dt;
+    s.thrust = throttle;
+    s.requestedAngle = requestedAngle;
+    if (s.h <= 0) {
+        s.h = 0;
+        const outcome = classify(s);
+        s.phase = outcome.success ? 'landed' : 'crashed';
+        s.outcome = outcome.detail;
+        s.thrust = 0;
+    }
+    if (s.time > 150) {
+        s.phase = 'crashed';
+        s.outcome = 'Flight timed out. Try stronger braking or correction.';
+        s.thrust = 0;
+    }
+    return s;
+}
+function simulate(tuning, maxSteps = 150 * 60) {
+    let s = freshState();
+    s.phase = 'flying';
+    const samples = [];
+    for (let i = 0; i < maxSteps && s.phase === 'flying'; i++) {
+        s = advance(s, tuning);
+        if (i % 6 === 0 || s.phase !== 'flying')
+            samples.push({ t: s.time, h: s.h, x: s.x, vx: s.vx, vy: s.vy, tilt: s.angle * 180 / Math.PI, thrust: s.thrust });
+    }
+    return { state: s, samples };
+}
+
+const canvas = document.querySelector('#flightCanvas');
+const cx = canvas.getContext('2d');
+const chart = document.querySelector('#chartCanvas');
+const gx = chart.getContext('2d');
+const element = (id) => document.getElementById(id);
+const launchButton = element('launchButton');
+const launchText = element('launchText');
+const launchIcon = element('launchIcon');
+const status = element('runStatus');
+const sliders = { braking: element('braking'), drift: element('drift'), stability: element('stability') };
+let state = freshState();
+let samples = [];
+let paused = false;
+let accumulator = 0;
+let prev = 0;
+let historyTimer = 0;
+const STAR_COUNT = 92;
+const stars = Array.from({ length: STAR_COUNT }, (_, i) => { const n = (j) => { let x = Math.sin((i + 1) * 124.537 + j * 89.12) * 43758.5453; return x - Math.floor(x); }; return { x: n(2), y: n(3) * 0.8, r: n(4) * 1.35 + 0.35, a: n(5) * 0.48 + 0.13 }; });
+function tuning() { return { braking: Number(sliders.braking.value), drift: Number(sliders.drift.value), stability: Number(sliders.stability.value) }; }
+function setTuning(t) { Object.keys(sliders).forEach(k => { sliders[k].value = String(t[k]); element(`${k}Value`).textContent = `${t[k]}%`; }); }
+function setPreset(name) { const t = PRESETS[name]; if (!t)
+    return; setTuning(t); document.querySelectorAll('[data-preset]').forEach(b => b.classList.toggle('active', b.dataset.preset === name)); }
+Object.keys(sliders).forEach(k => sliders[k].addEventListener('input', () => { element(`${k}Value`).textContent = `${sliders[k].value}%`; document.querySelectorAll('[data-preset]').forEach(b => b.classList.remove('active')); }));
+document.querySelectorAll('[data-preset]').forEach(b => b.addEventListener('click', () => setPreset(b.dataset.preset)));
+function sample() { const s = state; samples.push({ t: s.time, h: s.h, vx: s.vx, vy: s.vy, x: s.x, tilt: s.angle * 180 / Math.PI, thrust: s.thrust }); }
+function reset() { state = freshState(); samples = []; paused = false; accumulator = 0; historyTimer = 0; updateUI(); render(); }
+function launchOrPause() {
+    if (state.phase === 'ready' || state.phase === 'landed' || state.phase === 'crashed') {
+        if (state.phase !== 'ready')
+            reset();
+        state = { ...state, phase: 'flying' };
+        paused = false;
+        sample();
+    }
+    else if (state.phase === 'flying')
+        paused = !paused;
+    updateUI();
+}
+launchButton.addEventListener('click', launchOrPause);
+element('resetButton').addEventListener('click', reset);
+document.addEventListener('keydown', e => {
+    const t = e.target;
+    if (t.tagName === 'INPUT' || t.tagName === 'TEXTAREA' || t.tagName === 'BUTTON')
+        return;
+    if (e.code === 'Space') {
+        e.preventDefault();
+        launchOrPause();
+    }
+    if (e.code === 'KeyR') {
+        e.preventDefault();
+        reset();
+    }
+});
+function signed(n, fraction = 1) { const abs = Math.abs(n).toFixed(fraction); const [whole, dec] = abs.split('.'); const sign = n < 0 ? '−' : '+'; return `${sign}${whole}<span>.${dec}</span>`; }
+function metric(id, value, sign = true) { element(id).innerHTML = sign ? signed(value) : Math.abs(value).toFixed(1).replace(/(\.\d)$/, '<span>$1</span>'); }
+function clock(t) { const m = Math.floor(t / 60).toString().padStart(2, '0'); return `${m}:${(t % 60).toFixed(1).padStart(4, '0')}`; }
+function updateUI() {
+    const running = state.phase === 'flying' && !paused;
+    launchText.textContent = state.phase === 'ready' ? 'LAUNCH SIMULATION' : state.phase === 'flying' ? (paused ? 'RESUME SIMULATION' : 'PAUSE SIMULATION') : 'RUN AGAIN';
+    launchIcon.textContent = state.phase === 'flying' && !paused ? 'Ⅱ' : '▶';
+    const name = state.phase === 'flying' ? (paused ? 'PAUSED' : 'IN FLIGHT') : state.phase === 'landed' ? 'TOUCHDOWN' : state.phase === 'crashed' ? 'LANDING FAILED' : 'STANDBY';
+    status.innerHTML = `<span class="status-led"></span> ${name}`;
+    status.className = `status ${state.phase === 'flying' ? 'flying' : state.phase === 'crashed' ? 'crashed' : ''}`;
+    metric('altitude', state.h, false);
+    metric('speed', state.vy);
+    metric('offset', state.x);
+    metric('attitude', state.angle * 180 / Math.PI);
+    element('altFill').style.width = `${clamp(state.h / 330 * 100, 0, 100)}%`;
+    element('fuel').textContent = `FUEL ${state.fuel.toFixed(0)}%`;
+    element('speedCaption').textContent = state.vy < 0 ? 'DESCENDING' : 'CLIMBING';
+    element('elapsed').textContent = clock(state.time);
+    const o = element('outcomePanel');
+    o.className = 'outcome-card';
+    if (state.phase === 'landed') {
+        o.classList.add('success');
+        element('outcomeIcon').textContent = '✓';
+        element('outcomeHeading').textContent = 'MISSION SUCCESS';
+        element('outcomeTitle').textContent = 'Nailed the touchdown.';
+        element('outcomeDetail').textContent = `${state.outcome} Impact ${Math.abs(state.vy).toFixed(1)} m/s · pad error ${Math.abs(state.x).toFixed(1)} m.`;
+    }
+    else if (state.phase === 'crashed') {
+        o.classList.add('failure');
+        element('outcomeIcon').textContent = '×';
+        element('outcomeHeading').textContent = 'FLIGHT REVIEW';
+        element('outcomeTitle').textContent = 'Well, that was expensive.';
+        element('outcomeDetail').textContent = state.outcome;
+    }
+    else if (state.phase === 'flying') {
+        element('outcomeIcon').textContent = paused ? 'Ⅱ' : '↗';
+        element('outcomeHeading').textContent = paused ? 'TELEMETRY HOLD' : 'AUTOPILOT ENGAGED';
+        element('outcomeTitle').textContent = paused ? 'Flight paused.' : 'Approach in progress.';
+        element('outcomeDetail').textContent = 'Watch the flight data. You can adjust the sliders while the simulation is running.';
+    }
+    else {
+        element('outcomeIcon').textContent = '◎';
+        element('outcomeHeading').textContent = 'MISSION BRIEFING';
+        element('outcomeTitle').textContent = 'Ready when you are.';
+        element('outcomeDetail').textContent = 'Make your adjustments, then launch the simulation. The flight data will help you tune the next attempt.';
+    }
+    void running;
+}
+const W = canvas.width, H = canvas.height;
+const ground = H * 0.84, padX = W * 0.60, pxPerMeter = 1.20;
+const shipX = (x) => padX + x * pxPerMeter;
+const shipY = (h) => ground - h * pxPerMeter;
+function rect(x, y, w, h, color) { cx.fillStyle = color; cx.fillRect(x, y, w, h); }
+function label(text, x, y, size = 12, color = '#8ea6b8', align = 'left') {
+    cx.fillStyle = color;
+    cx.font = `${size}px ui-monospace,SFMono-Regular,Consolas,monospace`;
+    cx.textAlign = align;
+    cx.fillText(text, x, y);
+    cx.textAlign = 'left';
+}
+function drawBackground() {
+    const gr = cx.createLinearGradient(0, 0, 0, H);
+    gr.addColorStop(0, '#081b30');
+    gr.addColorStop(0.7, '#0b2639');
+    gr.addColorStop(1, '#152b36');
+    rect(0, 0, W, H, gr);
+    for (const star of stars) {
+        cx.globalAlpha = star.a;
+        cx.fillStyle = '#d5f0f5';
+        cx.beginPath();
+        cx.arc(star.x * W, star.y * H, star.r, 0, Math.PI * 2);
+        cx.fill();
+    }
+    cx.globalAlpha = 1;
+    const glow = cx.createRadialGradient(850, 100, 4, 850, 100, 250);
+    glow.addColorStop(0, 'rgba(80,149,172,.17)');
+    glow.addColorStop(1, 'rgba(80,149,172,0)');
+    cx.fillStyle = glow;
+    cx.fillRect(540, 0, 500, 480);
+    cx.strokeStyle = 'rgba(118,174,184,.13)';
+    cx.lineWidth = 1;
+    cx.setLineDash([4, 9]);
+    for (let x = padX % 90; x < W; x += 90) {
+        cx.beginPath();
+        cx.moveTo(x, 44);
+        cx.lineTo(x, ground);
+        cx.stroke();
+    }
+    for (let y = 50; y < ground; y += 65) {
+        cx.beginPath();
+        cx.moveTo(0, y);
+        cx.lineTo(W, y);
+        cx.stroke();
+    }
+    cx.setLineDash([]);
+    cx.fillStyle = '#10283a';
+    cx.beginPath();
+    cx.moveTo(0, ground);
+    for (let x = 0; x <= W; x += 20) {
+        let y = ground - 35 - 13 * Math.sin(x * 0.015) - 28 * Math.sin(x * 0.005);
+        cx.lineTo(x, y);
+    }
+    cx.lineTo(W, ground);
+    cx.closePath();
+    cx.fill();
+    cx.fillStyle = '#162e39';
+    cx.beginPath();
+    cx.moveTo(0, ground);
+    for (let x = 0; x <= W; x += 25) {
+        let y = ground - 8 - 8 * Math.sin(x * 0.02) - 11 * Math.sin(x * 0.008);
+        cx.lineTo(x, y);
+    }
+    cx.lineTo(W, H);
+    cx.lineTo(0, H);
+    cx.closePath();
+    cx.fill();
+    rect(0, ground, W, H - ground, '#172d34');
+    rect(0, ground, W, 3, '#385c61');
+    // Landing platform, illuminated rails and centre target.
+    const pW = (PAD_HALF_WIDTH * 2 + 15) * pxPerMeter;
+    rect(padX - pW / 2, ground - 8, pW, 8, '#426e73');
+    rect(padX - pW / 2, ground - 12, pW, 4, '#b5f18e');
+    rect(padX - pW / 2 - 9, ground - 2, 11, 14, '#253f47');
+    rect(padX + pW / 2 - 2, ground - 2, 11, 14, '#253f47');
+    const padGlow = cx.createRadialGradient(padX, ground - 7, 1, padX, ground - 7, 150);
+    padGlow.addColorStop(0, 'rgba(181,241,142,.12)');
+    padGlow.addColorStop(1, 'rgba(181,241,142,0)');
+    cx.fillStyle = padGlow;
+    cx.fillRect(padX - 155, ground - 165, 310, 170);
+    cx.strokeStyle = '#89e7c180';
+    cx.setLineDash([5, 8]);
+    cx.beginPath();
+    cx.moveTo(padX, ground - 13);
+    cx.lineTo(padX, 55);
+    cx.stroke();
+    cx.setLineDash([]);
+    label('LANDING PAD / A01', padX, ground + 32, 12, '#b7e9bf', 'center');
+    label('0 M', padX + 16, ground - 19, 11, '#8cc5bb');
+    for (let i = 0; i < 5; i++) {
+        const y = ground - i * 100 * pxPerMeter;
+        cx.strokeStyle = '#6598a33b';
+        cx.beginPath();
+        cx.moveTo(32, y);
+        cx.lineTo(105, y);
+        cx.stroke();
+        label(`${i * 100} M`, 35, y - 9, 11, '#7398ab');
+    }
+    rect(20, 21, 248, 49, 'rgba(4,16,28,.53)');
+    label('DESCENT CORRIDOR / SECTOR 7', 34, 40, 12, '#9cbcc8');
+    label('TARGET: PAD A01', 34, 58, 12, '#c1e4a4');
+    rect(W - 251, 21, 231, 49, 'rgba(4,16,28,.53)');
+    label(`AUTOPILOT ${state.phase === 'flying' ? 'ACTIVE' : 'READY'}`, W - 235, 40, 12, '#9cbcc8');
+    label(`THRUST ${Math.round(state.thrust * 100)}%`, W - 235, 58, 12, '#c1e4a4');
+}
+function drawRocket() {
+    const x = shipX(state.x), y = shipY(state.h) - 33;
+    // Trace the actual flight path since ignition.
+    if (samples.length > 1) {
+        cx.strokeStyle = 'rgba(104,228,226,.35)';
+        cx.lineWidth = 2;
+        cx.setLineDash([3, 5]);
+        cx.beginPath();
+        for (let i = 0; i < samples.length; i++) {
+            const s = samples[i];
+            const sx = shipX(s.x), sy = shipY(s.h) - 33;
+            if (i === 0)
+                cx.moveTo(sx, sy);
+            else
+                cx.lineTo(sx, sy);
+        }
+        cx.stroke();
+        cx.setLineDash([]);
+    }
+    if (state.phase === 'flying' && state.thrust > 0.06) {
+        const jetLength = 24 + state.thrust * 85 + (Math.sin(state.time * 81) * 8);
+        cx.save();
+        cx.translate(x, y);
+        cx.rotate(state.angle);
+        const jet = cx.createLinearGradient(0, 25, 0, jetLength + 38);
+        jet.addColorStop(0, '#fff9c8');
+        jet.addColorStop(.24, '#ffe68a');
+        jet.addColorStop(.62, '#ff9c48');
+        jet.addColorStop(1, 'rgba(245,116,41,0)');
+        cx.fillStyle = jet;
+        cx.beginPath();
+        cx.moveTo(-9, 23);
+        cx.quadraticCurveTo(-7, jetLength * .77, 0, jetLength + 32);
+        cx.quadraticCurveTo(7, jetLength * .74, 9, 23);
+        cx.closePath();
+        cx.fill();
+        cx.fillStyle = 'rgba(255,184,105,.13)';
+        cx.beginPath();
+        cx.ellipse(0, jetLength * .6, 30, jetLength * .65, 0, 0, Math.PI * 2);
+        cx.fill();
+        cx.restore();
+    }
+    // Landing shadow tracks lateral error.
+    cx.fillStyle = 'rgba(3,10,15,.35)';
+    cx.beginPath();
+    cx.ellipse(x, ground + 3, 24, 4, 0, 0, Math.PI * 2);
+    cx.fill();
+    cx.save();
+    cx.translate(x, y);
+    cx.rotate(state.angle);
+    if (state.phase === 'crashed')
+        cx.globalAlpha = .65;
+    cx.shadowColor = 'rgba(104,220,230,.3)';
+    cx.shadowBlur = 24;
+    cx.fillStyle = '#dce8ed';
+    cx.beginPath();
+    cx.moveTo(0, -43);
+    cx.lineTo(16, -15);
+    cx.lineTo(16, 29);
+    cx.lineTo(-16, 29);
+    cx.lineTo(-16, -15);
+    cx.closePath();
+    cx.fill();
+    cx.shadowBlur = 0;
+    rect(-13, -14, 26, 25, '#d4e0e3');
+    rect(-13, 2, 26, 5, '#e88957');
+    rect(-13, -17, 26, 5, '#75c4d0');
+    cx.fillStyle = '#526c83';
+    cx.beginPath();
+    cx.moveTo(-18, 12);
+    cx.lineTo(-27, 31);
+    cx.lineTo(-11, 28);
+    cx.lineTo(-11, 8);
+    cx.fill();
+    cx.beginPath();
+    cx.moveTo(18, 12);
+    cx.lineTo(27, 31);
+    cx.lineTo(11, 28);
+    cx.lineTo(11, 8);
+    cx.fill();
+    cx.strokeStyle = '#d4e9ef';
+    cx.lineWidth = 3;
+    cx.beginPath();
+    cx.moveTo(-15, 27);
+    cx.lineTo(-22, 38);
+    cx.lineTo(-30, 38);
+    cx.moveTo(15, 27);
+    cx.lineTo(22, 38);
+    cx.lineTo(30, 38);
+    cx.stroke();
+    rect(-10, 28, 20, 8, '#637e89');
+    rect(-7, 36, 14, 5, '#283c4e');
+    cx.fillStyle = '#1d5166';
+    cx.beginPath();
+    cx.arc(0, -24, 5, 0, Math.PI * 2);
+    cx.fill();
+    cx.fillStyle = '#70ecdd';
+    cx.beginPath();
+    cx.arc(0, -24, 3.2, 0, Math.PI * 2);
+    cx.fill();
+    cx.restore();
+    // Tracking label and offset vector.
+    cx.strokeStyle = 'rgba(127,225,213,.54)';
+    cx.lineWidth = 1;
+    cx.beginPath();
+    cx.moveTo(x + 28, y - 17);
+    cx.lineTo(x + 80, y - 39);
+    cx.lineTo(x + 136, y - 39);
+    cx.stroke();
+    label('STARSHIP 01', x + 84, y - 46, 12, '#d7eeee');
+    label(`ALT ${state.h.toFixed(0)} M`, x + 84, y - 23, 11, '#87bfc5');
+    if (state.phase !== 'landed') {
+        cx.strokeStyle = 'rgba(185,232,157,.35)';
+        cx.setLineDash([5, 6]);
+        cx.beginPath();
+        cx.moveTo(x, ground - 7);
+        cx.lineTo(padX, ground - 7);
+        cx.stroke();
+        cx.setLineDash([]);
+    }
+    if (state.phase === 'crashed') {
+        label('IMPACT', x, y - 79, 17, '#ffb18c', 'center');
+    }
+    if (state.phase === 'landed') {
+        label('TOUCHDOWN!', padX, ground - 135, 22, '#c4f7a5', 'center');
+    }
+}
+function renderFlight() { cx.clearRect(0, 0, W, H); drawBackground(); drawRocket(); }
+function renderChart() {
+    const w = chart.width, h = chart.height;
+    gx.clearRect(0, 0, w, h);
+    const l = 57, r = w - 15, t = 14, b = h - 34;
+    gx.font = '12px ui-monospace,monospace';
+    gx.lineWidth = 1;
+    gx.strokeStyle = '#274154';
+    gx.fillStyle = '#68889b';
+    for (let i = 0; i <= 4; i++) {
+        const y = t + (b - t) * i / 4;
+        gx.beginPath();
+        gx.moveTo(l, y);
+        gx.lineTo(r, y);
+        gx.stroke();
+        gx.fillText(`${Math.round(330 * (1 - i / 4))}`, 9, y + 3);
+    }
+    const timeMax = Math.max(36, Math.ceil(state.time / 10) * 10);
+    for (let i = 0; i <= 6; i++) {
+        const x = l + (r - l) * i / 6;
+        gx.strokeStyle = '#1c3446';
+        gx.beginPath();
+        gx.moveTo(x, t);
+        gx.lineTo(x, b);
+        gx.stroke();
+        gx.fillStyle = '#7290a5';
+        gx.fillText(`${(timeMax * i / 6).toFixed(0)}s`, x - 8, h - 10);
+    }
+    if (samples.length < 2) {
+        gx.fillStyle = '#66899c';
+        gx.textAlign = 'center';
+        gx.fillText('LAUNCH A SIMULATION TO RECORD TELEMETRY', w / 2, h / 2);
+        gx.textAlign = 'left';
+        return;
+    }
+    const xVal = (s) => l + s.t / timeMax * (r - l);
+    gx.strokeStyle = '#b4ec86';
+    gx.lineWidth = 3;
+    gx.beginPath();
+    samples.forEach((s, i) => { const x = xVal(s), y = t + (1 - clamp(s.h / 330, 0, 1)) * (b - t); if (!i)
+        gx.moveTo(x, y);
+    else
+        gx.lineTo(x, y); });
+    gx.stroke();
+    gx.strokeStyle = '#6be1e5';
+    gx.lineWidth = 2;
+    gx.beginPath();
+    samples.forEach((s, i) => { const x = xVal(s), y = t + clamp(Math.abs(s.vy) / 28, 0, 1) * (b - t); if (!i)
+        gx.moveTo(x, y);
+    else
+        gx.lineTo(x, y); });
+    gx.stroke();
+    const latest = samples[samples.length - 1];
+    gx.fillStyle = '#b4ec86';
+    gx.beginPath();
+    gx.arc(xVal(latest), t + (1 - clamp(latest.h / 330, 0, 1)) * (b - t), 4, 0, 2 * Math.PI);
+    gx.fill();
+}
+function render() { renderFlight(); renderChart(); }
+function frame(now) {
+    if (!prev)
+        prev = now;
+    const realDt = clamp((now - prev) / 1000, 0, 0.065);
+    prev = now;
+    if (state.phase === 'flying' && !paused) {
+        accumulator += realDt * 2.0;
+        let count = 0;
+        while (accumulator >= STEP && count < 15 && state.phase === 'flying') {
+            state = advance(state, tuning(), STEP);
+            accumulator -= STEP;
+            historyTimer += STEP;
+            count++;
+            if (historyTimer >= .1 || state.phase !== 'flying') {
+                sample();
+                historyTimer = 0;
+            }
+        }
+        if (count >= 15)
+            accumulator = 0;
+        updateUI();
+    }
+    render();
+    requestAnimationFrame(frame);
+}
+setTuning(DEFAULT_TUNING);
+updateUI();
+render();
+// The preview parameter runs the real physics to a representative near-landing point.
+// It does not fabricate a scene or change any flight mechanics.
+if (new URLSearchParams(location.search).get('preview') === '1') {
+    state = { ...state, phase: 'flying' };
+    sample();
+    for (let i = 0; i < 24 * 60 && state.phase === 'flying'; i++) {
+        state = advance(state, DEFAULT_TUNING);
+        if (i % 6 === 0)
+            sample();
+    }
+    paused = true;
+    updateUI();
+    render();
+}
+requestAnimationFrame(frame);
+</script>
+</body>
+</html>
